@@ -15,6 +15,8 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Dialog from "@mui/material/Dialog";
 
 const baseURL = `http://54.215.188.103:9090/api/v1`;
 
@@ -26,6 +28,20 @@ function App() {
   const [step, setStep] = useState<number>(100);
 
   const [tsData, setTsData] = useState<string>();
+
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [dialogOpen, setDialogOpen] = useState(true);
+  const [showHelpText, setShowHelpText] = useState(false);
+
+  useEffect(() => {
+    const loginStatus = localStorage.getItem("login_status");
+
+    if (loginStatus) {
+      setDialogOpen(false);
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -91,6 +107,52 @@ function App() {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Dialog fullScreen open={dialogOpen} onClose={() => {}}>
+          <Grid
+            sx={{ height: "100vh" }}
+            padding="3rem"
+            container
+            spacing={3}
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item>
+              <TextField
+                label="User Name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              ></TextField>
+            </Grid>
+            <Grid item>
+              <TextField
+                label="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></TextField>
+            </Grid>
+            {showHelpText && (
+              <Grid item color="red">
+                <Typography>Password is wrong Please Try again</Typography>
+              </Grid>
+            )}
+            <Grid item>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  if (userName === "ecl_user" && password === "ecl_qmax@123") {
+                    setDialogOpen(false);
+                    localStorage.setItem("login_status", "true");
+                  } else {
+                    setShowHelpText(true);
+                  }
+                }}
+              >
+                Login
+              </Button>
+            </Grid>
+          </Grid>
+        </Dialog>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <AppBar position="static">
@@ -103,6 +165,17 @@ function App() {
                 <Typography variant="h6" component="div" sx={{ mx: "2rem" }}>
                   Promethues Data Dump
                 </Typography>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  onClick={() => {
+                    setDialogOpen(true);
+                    localStorage.clear();
+                  }}
+                  sx={{ marginRight: 0, marginLeft: "auto" }}
+                >
+                  Log out
+                </Button>
               </Toolbar>
             </AppBar>
           </Grid>
