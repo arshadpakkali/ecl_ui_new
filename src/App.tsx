@@ -21,8 +21,8 @@ const baseURL = `http://54.215.188.103:9090/api/v1`;
 function App() {
   const [metrics, setMetrics] = useState<string[]>([]);
   const [selectedMetric, setSelectedMetric] = useState<string | null>("");
-  const [stDate, setStDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [stDate, setStDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const [step, setStep] = useState<number>(100);
 
   const [tsData, setTsData] = useState<string>();
@@ -62,7 +62,7 @@ function App() {
 
     const sanitizedData = data.data.result
       .map((res: any) => {
-        return res.values.map(([ts, data]) => {
+        return res.values.map(([ts, data]: any) => {
           const [customer_id, site_id, block_id, rack_manger_id] =
             res.metric.topic.split("-");
           return {
@@ -152,7 +152,7 @@ function App() {
                         <TextField fullWidth {...params} />
                       )}
                       onChange={(e) => {
-                        setStDate(e);
+                        setStDate(e || new Date());
                       }}
                     />
                   </Grid>
@@ -165,8 +165,7 @@ function App() {
                         <TextField fullWidth {...params} />
                       )}
                       onChange={(e: Date | null) => {
-                        console.log(e);
-                        setEndDate(e);
+                        setEndDate(e || new Date());
                       }}
                     />
                   </Grid>
