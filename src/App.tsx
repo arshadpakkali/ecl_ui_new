@@ -100,6 +100,7 @@ function App() {
     const outBlob = new Blob([csvOut], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(outBlob);
     const link = document.createElement("a");
+    link.download = `${selectedMetric}_${stDate.toISOString()}.csv`;
     link.href = url;
     link.click();
   };
@@ -264,7 +265,9 @@ function App() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Typography variant="h6">Preview (10 lines)</Typography>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="h6">Preview (10 lines)</Typography>
+                  </Box>
                   <pre>{tsData?.split("\n").slice(0, 10).join("\n")}</pre>
                 </Grid>
               </Grid>
